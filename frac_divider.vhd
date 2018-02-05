@@ -6,8 +6,8 @@ entity frac_divider is
 			N 		: integer;
 			x 		: integer);
 	port(		reset	: in std_logic;
-				clk_in	: in std_logic;
-				clk_out	: out std_logic);
+			clk_in	: in std_logic;
+			clk_out	: out std_logic);
 end frac_divider;
 
 architecture behavior of frac_divider is
