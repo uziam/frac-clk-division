@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 
 entity frac_divider is
 	generic(	M 		: integer;
-				N 		: integer;
-				x 		: integer);
+			N 		: integer;
+			x 		: integer);
 	port(		reset	: in std_logic;
 				clk_in	: in std_logic;
 				clk_out	: out std_logic);
