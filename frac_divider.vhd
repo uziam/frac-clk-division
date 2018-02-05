@@ -2,25 +2,30 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity frac_divider is
-	generic(	N 		: integer;
-				M 		: integer;
-				x 		: integer := 1);
+	generic(	M 		: integer;
+				N 		: integer;
+				x 		: integer);
 	port(		reset	: in std_logic;
 				clk_in	: in std_logic;
 				clk_out	: out std_logic);
 end frac_divider;
 
 architecture behavior of frac_divider is
-	
-	constant L: integer := integer(M/N) + 1;
-	constant J: integer := L - 1;
-	constant C: integer := x * N;
-	constant B: integer := C*L - C*M/N;
+	-- since there is a divide-by-two circuit at the output
+	-- multiply N by 2, to cancel the effect
+	constant P: integer := N*2; -- use this instead of N
 
+	-- calculate the required constants
+	constant L: integer := integer(M/P) + 1;
+	constant J: integer := L - 1;
+	constant C: integer := x * P;
+	constant B: integer := C*L - C*M/P;
+
+	-- internal signals
 	signal cycle_counter	: integer range 0 to C-1;
 	signal modulus			: integer range 0 to L-1;
-	signal mod_counter	: integer range 0 to L-1;
-	signal mod_flag		: std_logic; -- flag raised when mod_counter reaches 0
+	signal mod_counter		: integer range 0 to L-1;
+	signal mod_flag			: std_logic; -- flag raised when mod_counter reaches 0
 	signal out_reg			: std_logic; -- output register
 
 begin
@@ -32,7 +37,7 @@ begin
 	begin
 		if(rising_edge(clk_in)) then
 			if(reset = '1') then
-				cycle_counter <= C-1;
+				cycle_counter <= 0;
 			else
 				if(mod_flag = '1') then
 					if(cycle_counter = 0) then
@@ -75,7 +80,7 @@ begin
 	-- divides mod_flag frequency by 2
 	p_div_by_2: process(clk_in)
 	begin
-		if(rising_edge(clk_in))
+		if(rising_edge(clk_in)) then
 			if(reset = '1') then
 				out_reg <= '0';
 			elsif(mod_flag = '1') then
@@ -86,4 +91,5 @@ begin
 
 	-- output clock
 	clk_out <= out_reg;
+
 end behavior; 
