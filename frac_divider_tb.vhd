@@ -5,7 +5,7 @@ entity frac_divider_tb is
 end frac_divider_tb;
 
 architecture behavior of frac_divider_tb is
-    -- output clock signal
+    -- signal for the uut
     signal rst          : std_logic := '0';
     signal clk_i        : std_logic := '0';
     signal clk_o        : std_logic;
